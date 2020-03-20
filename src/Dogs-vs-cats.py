@@ -1,12 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[45]:
-
-
-# ATTENTION: Please do not alter any of the provided code in the exercise. Only add your own code where indicated
-# ATTENTION: Please do not add or remove any cells in the exercise. The grader will check specific cells based on the cell position.
-# ATTENTION: Please use the provided epoch values when training.
 
 # In this exercise you will train a CNN on the FULL Cats-v-dogs dataset
 # This will require you doing a lot of data preprocessing because
@@ -23,9 +15,6 @@ from shutil import copyfile
 from os import getcwd
 
 
-# In[44]:
-
-
 path_cats_and_dogs = f"{getcwd()}/../tmp2/cats-and-dogs.zip"
 shutil.rmtree('/tmp')
 
@@ -35,9 +24,6 @@ zip_ref.extractall('/tmp')
 zip_ref.close()
 
 
-# In[46]:
-
-
 print(len(os.listdir('/tmp/PetImages/Cat/')))
 print(len(os.listdir('/tmp/PetImages/Dog/')))
 
@@ -45,11 +31,7 @@ print(len(os.listdir('/tmp/PetImages/Dog/')))
 # 12501
 # 12501
 
-
-# In[47]:
-
-
-# Use os.mkdir to create your directories
+# os.mkdir to create your directories
 # You will need a directory for cats-v-dogs, and subdirectories for training
 # and testing. These in turn will need subdirectories for 'cats' and 'dogs'
 try:
@@ -73,11 +55,7 @@ try:
 except OSError:
     pass
 
-
-# In[57]:
-
-
-# Write a python function called split_data which takes
+# a python function called split_data which takes
 # a SOURCE directory containing the files
 # a TRAINING directory that a portion of the files will be copied to
 # a TESTING directory that a portion of the files will be copie to
@@ -95,7 +73,7 @@ except OSError:
 # copyfile(source, destination) copies a file from source to destination
 # random.sample(list, len(list)) shuffles a list
 def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE):
-# YOUR CODE STARTS HERE
+
     fnames = os.listdir(SOURCE)
     p = int(SPLIT_SIZE * len(fnames))
     fnames = random.sample(fnames,len(fnames))
@@ -111,7 +89,7 @@ def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE):
                 temp = SOURCE + str(f)
                 copyfile(temp,'%s/%s'%(TESTING,temp.split('/')[-1]))
             i = i + 1
-# YOUR CODE ENDS HERE
+
 
 
 CAT_SOURCE_DIR = "/tmp/PetImages/Cat/"
@@ -130,8 +108,6 @@ split_data(DOG_SOURCE_DIR, TRAINING_DOGS_DIR, TESTING_DOGS_DIR, split_size)
 # 11702.jpg is zero length, so ignoring
 
 
-# In[58]:
-
 
 print(len(os.listdir('/tmp/cats-v-dogs/training/cats/')))
 print(len(os.listdir('/tmp/cats-v-dogs/training/dogs/')))
@@ -145,11 +121,8 @@ print(len(os.listdir('/tmp/cats-v-dogs/testing/dogs/')))
 # 1250
 
 
-# In[59]:
-
-
 # DEFINE A KERAS MODEL TO CLASSIFY CATS V DOGS
-# USE AT LEAST 3 CONVOLUTION LAYERS
+# Using 3 CONVOLUTION LAYERS
 model = tf.keras.models.Sequential([
 # YOUR CODE HERE
     tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(150, 150, 3)),
@@ -166,18 +139,16 @@ model = tf.keras.models.Sequential([
 model.compile(optimizer=RMSprop(lr=0.001), loss='binary_crossentropy', metrics=['acc'])
 
 
-# In[60]:
 
-
-TRAINING_DIR = "/tmp/cats-v-dogs/training"#YOUR CODE HERE
-train_datagen = ImageDataGenerator( rescale = 1.0/255. )#YOUR CODE HERE
+TRAINING_DIR = "/tmp/cats-v-dogs/training"
+train_datagen = ImageDataGenerator( rescale = 1.0/255. )
 train_generator = train_datagen.flow_from_directory(TRAINING_DIR,
                                                     batch_size=20,
                                                     class_mode='binary',
                                                     target_size=(150, 150))#YOUR CODE HERE
 
-VALIDATION_DIR = "/tmp/cats-v-dogs/testing"#YOUR CODE HERE
-validation_datagen = ImageDataGenerator( rescale = 1.0/255. )#YOUR CODE HERE
+VALIDATION_DIR = "/tmp/cats-v-dogs/testing"
+validation_datagen = ImageDataGenerator( rescale = 1.0/255. )
 validation_generator = validation_datagen.flow_from_directory(VALIDATION_DIR,
                                                          batch_size=20,
                                                          class_mode  = 'binary',
@@ -190,16 +161,12 @@ validation_generator = validation_datagen.flow_from_directory(VALIDATION_DIR,
 # Found 2500 images belonging to 2 classes.
 
 
-# In[61]:
-
 
 history = model.fit_generator(train_generator,
                               epochs=3,
                               verbose=1,
                               validation_data=validation_generator)
 
-
-# In[62]:
 
 
 # PLOT LOSS AND ACCURACY
@@ -236,24 +203,4 @@ plt.plot(epochs, val_loss, 'b', "Validation Loss")
 
 plt.title('Training and validation loss')
 
-# Desired output. Charts with training and validation metrics. No crash :)
-
-
-# In[ ]:
-
-
-# Now click the 'Submit Assignment' button above.
-# Once that is complete, please run the following two cells to save your work and close the notebook
-
-
-# In[ ]:
-
-
-get_ipython().run_cell_magic('javascript', '', '<!-- Save the notebook -->\nIPython.notebook.save_checkpoint();')
-
-
-# In[ ]:
-
-
-get_ipython().run_cell_magic('javascript', '', 'IPython.notebook.session.delete();\nwindow.onbeforeunload = null\nsetTimeout(function() { window.close(); }, 1000);')
-
+# Desired output. Charts with training and validation metrics.
